@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const provider = new Web3.providers.HttpProvider('https://matic-mumbai.chainstacklabs.com');
 const web3 = new Web3(provider)
-web3.eth.accounts.wallet.add("0xe9c730cfba8b1d0cf7428cd2be8cb52e0e20df83d92db78201a4ee68122e1cec");
+web3.eth.accounts.wallet.add("0x<PrivateKey>");
 
 const isConfirmed = async (txHash, blocks) => {
     try {
