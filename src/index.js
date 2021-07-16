@@ -13,7 +13,7 @@ const isConfirmed = async (txHash, blocks) => {
             // console.log(`${txHash} is still pending`)
             return false
         }
-        const block = await this.web3.eth.getBlock('latest')
+        const block = await web3.eth.getBlock('latest')
 
         if (block.number - tx.blockNumber >= blocks) {
             return true
@@ -35,7 +35,7 @@ const waitForConfirmation = async (txHash) => {
     try {
         let i = 0
         while (i < 8) {
-            if (await isConfirmed(txHash, 64)) {
+            if (await isConfirmed(txHash, 12)) {
                 console.log(txHash, 'confirmed')
                 const receipt = await web3.eth.getTransactionReceipt(txHash)
                 if (receipt != null) return receipt

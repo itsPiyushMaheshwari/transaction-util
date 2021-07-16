@@ -3,7 +3,7 @@
 Transaction-util is a utility for sending transactions to the Polygon network in a robust manner.
 
 Following are some of the features:
-- Waits for pending transactions for 64 blocks conformation and for 2 minutes, if it is not confirmed then it sends the transaction again with higher gas price.
+- Waits for pending transactions for 12 blocks conformation and for 2 minutes, if it is not confirmed then it sends the transaction again with higher gas price.
 - on completion of transaction it will save the status, failed or completed in result.json file
 - It does not include bach transactions for now.
 
