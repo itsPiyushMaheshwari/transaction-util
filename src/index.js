@@ -1,9 +1,25 @@
 const Web3 = require('web3')
 const fs = require('fs')
 const path = require('path')
-const provider = new Web3.providers.HttpProvider('https://matic-mumbai.chainstacklabs.com');
+const fetch = require('node-fetch')
+const config = require("./config/index")
+const provider = new Web3.providers.HttpProvider(config.maticRPC);
 const web3 = new Web3(provider)
-web3.eth.accounts.wallet.add("0x<PrivateKey>");
+web3.eth.accounts.wallet.add(config.privateKey);
+
+const getGasPrice = async () => {
+    try {
+        let result = await fetch(config.maticGasStation)
+        result = await result.json()
+        if(result && result.fast){
+            return result.fast * (10**9)
+        }
+        return 0
+    } catch (e) {
+        console.log("error in getting gasPrice", e)
+        return 0
+    }
+}
 
 const isConfirmed = async (txHash, blocks) => {
     try {
@@ -54,7 +70,7 @@ const waitForConfirmation = async (txHash) => {
 const handleTransaction = async (address, amount, gasPrice, nonce) => {
     return new Promise((resolve, reject) => {
         const formattedAddress = web3.utils.toChecksumAddress(address)
-        web3.eth.sendTransaction({ from: "0xFd71Dc9721d9ddCF0480A582927c3dCd42f3064C", to: formattedAddress, value: amount, gas: 21000, gasPrice: gasPrice, nonce: nonce })
+        web3.eth.sendTransaction({ from: config.fromAddress, to: formattedAddress, value: amount, gas: 21000, gasPrice: gasPrice, nonce: nonce })
         .on('transactionHash', (transactionHash) => {
             resolve(transactionHash)
         })
@@ -68,8 +84,9 @@ const sendSingleTransaction = async (address, amount) => {
         let gasPrice = 0
         let receipt = null;
         while (!receipt) {
-            gasPrice += 20000000000
-            const nonce = await web3.eth.getTransactionCount("0xFd71Dc9721d9ddCF0480A582927c3dCd42f3064C")
+            let price = await getGasPrice()
+            gasPrice += price
+            const nonce = await web3.eth.getTransactionCount(config.fromAddress)
             console.log(nonce)
             const txHash = await handleTransaction(address, amount, gasPrice, nonce)
             console.log(txHash, gasPrice)
