@@ -81,7 +81,7 @@ export default class Worker {
     async waitForConfirmation(txHash) {
         let i = 0
         while (i < 8) {
-            if (await this.web3Client.isConfirmed(txHash, 12)) {
+            if (await this.web3Client.isConfirmed(txHash, this.blockConfirmation)) {
                 console.log(txHash, 'confirmed')
                 const receipt = await web3.eth.getTransactionReceipt(txHash)
                 if (receipt != null) return receipt

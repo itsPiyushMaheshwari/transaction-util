@@ -13,5 +13,6 @@ module.exports = {
   privateKey: process.env.PRIVATE_KEY,
   mainRPC: process.env.MAIN_RPC,
   maticRPC: process.env.MATIC_RPC,
-  maticGasStation: process.env.MATIC_GAS_STATION
+  maticGasStation: process.env.MATIC_GAS_STATION,
+  rabbitMqHost: process.env.RABBITMQ_HOST
 }

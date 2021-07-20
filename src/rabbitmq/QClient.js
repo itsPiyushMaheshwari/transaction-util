@@ -1,12 +1,13 @@
 // import amqp from 'amqplib/callback_api'
 const amqp = require('amqplib')
+const config = require("../config/index")
 
 const QClient = class {
-    constructor() {}
-    
+    constructor() { }
+
     async initialize() {
-      this.conn = await amqp.connect('amqp://localhost:5672');
-      return this.createChannel()
+        this.conn = await amqp.connect(config.rabbitMqHost);
+        return this.createChannel()
     }
 
     // we can create as many channels that we can in a single connection
@@ -31,7 +32,7 @@ const QClient = class {
     }
 };
 
-export default getQueue = async() => {
+export default getQueue = async () => {
     const q = new QClient()
     await q.initialize()
     return q
