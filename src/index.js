@@ -54,7 +54,7 @@ const waitForConfirmation = async (txHash) => {
 const handleTransaction = async (address, amount, gasPrice, nonce) => {
     return new Promise((resolve, reject) => {
         const formattedAddress = web3.utils.toChecksumAddress(address)
-        web3.eth.sendTransaction({ from: "0xFd71Dc9721d9ddCF0480A582927c3dCd42f3064C", to: formattedAddress, value: amount, gas: 21000, gasPrice: gasPrice, nonce: nonce })
+        web3.eth.sendTransaction({ from: "0x76F152FdECD431A00E2B569719aD451289e55F08", to: formattedAddress, value: amount, gas: 21000, gasPrice: gasPrice, nonce: nonce })
         .on('transactionHash', (transactionHash) => {
             resolve(transactionHash)
         })
@@ -69,7 +69,7 @@ const sendSingleTransaction = async (address, amount) => {
         let receipt = null;
         while (!receipt) {
             gasPrice += 20000000000
-            const nonce = await web3.eth.getTransactionCount("0xFd71Dc9721d9ddCF0480A582927c3dCd42f3064C")
+            const nonce = await web3.eth.getTransactionCount("0x76F152FdECD431A00E2B569719aD451289e55F08")
             console.log(nonce)
             const txHash = await handleTransaction(address, amount, gasPrice, nonce)
             console.log(txHash, gasPrice)
@@ -95,6 +95,12 @@ const saveReceipt = async (address, receipt) => {
     }
 }
 
+const notDoneSaveReceipt = async (address) => {
+    const incompleteFile = "incomplete.json"
+    fs.writeFileSync(path.resolve(__dirname, incompleteFile), JSON.stringify(address, null, 2))
+    
+}
+
 const startTransaction = async () => {
     console.log("startProcess")
     const allJobs = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'addresses.json')).toString())
@@ -105,6 +111,9 @@ const startTransaction = async () => {
         console.log(receipt)
         if(receipt!="sendSingleTransactionFailed"){
             await saveReceipt(address, receipt)
+        }   
+        else{
+            await notDoneSaveReceipt(address)
         }
     }
 }
