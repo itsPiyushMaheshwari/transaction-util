@@ -77,7 +77,7 @@ const sendSingleTransaction = async (address, amount) => {
         }
         return receipt
     } catch(e) {
-        console.log("error in sendSingleTransaction", e)
+        // console.log("error in sendSingleTransaction", e)
         return "sendSingleTransactionFailed"
     }
 }
@@ -91,13 +91,16 @@ const saveReceipt = async (address, receipt) => {
         return
     } else {
         result[address] = receipt.transactionHash
+        
         fs.writeFileSync(path.resolve(__dirname, resultFile), JSON.stringify(result, null, 2)) // Indent 2 spaces
     }
 }
 
 const notDoneSaveReceipt = async (address) => {
     const incompleteFile = "incomplete.json"
-    fs.writeFileSync(path.resolve(__dirname, incompleteFile), JSON.stringify(address, null, 2))
+    const result = JSON.parse(fs.readFileSync(path.resolve(__dirname, incompleteFile)).toString())
+    result[address] = "incomplete"
+    fs.writeFileSync(path.resolve(__dirname, incompleteFile), JSON.stringify(result, null, 2))
     
 }
 
